@@ -1,4 +1,4 @@
-# ProgWebTrab1
+# ToDoList
 Repositório do trabalho 1 da disciplina INF1407
 
 ## Membros:

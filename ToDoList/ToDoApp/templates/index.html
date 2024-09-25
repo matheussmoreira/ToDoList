@@ -1,4 +1,5 @@
 <!-- index.html -->
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -11,7 +12,20 @@
 
   <ul>
     {% for todo in todos %}
-      <li>{{ todo.name }} ({{ todo.deadline }})</li>
+      <li>{{ todo.name }} ({{ todo.deadline }})
+        Marcar como concluída: 
+          <input type="checkbox" name="is_checked" value="True" {% if todo.is_checked %}checked{% endif %}>
+        <form action="{% url 'delete_todo' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="id" value="{{ todo.id }}">
+          <button type="submit">Atualizar</button>
+        </form>
+        <form action="{% url 'delete_todo' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="id" value="{{ todo.id }}">
+          <button type="submit">Delete</button>
+        </form>
+      </li>
     {% endfor %}
   </ul>
 {% endblock %}

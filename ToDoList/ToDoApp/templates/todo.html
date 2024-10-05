@@ -1,7 +1,4 @@
-<!-- index.html -->
-
-{% extends 'base.html' %}
-
+{% extends 'base_todo.html' %}
 {% block content %}
   <h1>To-Do List</h1>
   <form method="post">
@@ -9,7 +6,6 @@
     {{ form.as_p }}
     <button type="submit">Add To-Do</button>
   </form>
-
   <ul>
     {% for todo in todos %}
       <li>{{ todo.name }} ({{ todo.deadline }})

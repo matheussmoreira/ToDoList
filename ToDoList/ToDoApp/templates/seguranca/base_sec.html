@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <h1>Página Inicial</h1>
+        <div>
+            <a href="/">Homepage</a>
+            {% if not user.is_authenticated %}
+            | <a href="{% url 'registro' %}">Registrar</a>
+            | <a href="{% url 'login' %}?next={% url 'todo_list' %}">Login</a>
+            {% endif %}
+            | Bem-vindo(a) {% firstof user.username "visitante" %} !
+        </div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>

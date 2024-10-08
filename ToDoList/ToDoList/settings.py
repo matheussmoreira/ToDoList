@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import allowed_host
-
+from ToDoList.allowed_host import SECRET_HOST
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +25,7 @@ SECRET_KEY = 'django-insecure-b8ug=ha*odf2a9y^%@6_t(k+ylywnqu*2$s2vnq5fx_x%*+1du
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [allowed_host.SECRET_HOST]
+ALLOWED_HOSTS = [SECRET_HOST]
 
 
 # Application definition

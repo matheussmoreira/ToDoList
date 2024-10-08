@@ -1,3 +1,6 @@
+#Chave para permitir o acesso da AWS
+allowed_host.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

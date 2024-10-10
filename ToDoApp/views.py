@@ -6,7 +6,7 @@ from .forms import *
 # AUTHENTICATION PAGES
 
 def index(request):
-    return render(request, "seguranca/home_sec.html")
+    return render(request, "seguranca/base_sec.html")
 
 def registro(request):
     if request.method == 'POST':

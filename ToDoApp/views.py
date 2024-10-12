@@ -1,34 +1,52 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from .models import ToDo
 from .forms import *
 
 # AUTHENTICATION PAGES
 
 def index(request):
-    return render(request, "seguranca/base_sec.html")
+    return render(request, "auth/base_auth.html")
 
-def registro(request):
+def register(request):  
+    if request.method == 'POST':  
+        form = RegisterForm(request.POST)
+        if form.is_valid():  
+            form.save()
+            return redirect('login')
+            # context = {'form': LoginForm()}
+            # return render(request, 'auth/login.html', context)
+        else:
+            messages.error(request,'Registro inválido!')
+            return redirect('register')
+    context = {'form': RegisterForm()}  
+    return render(request, 'auth/register.html', context)  
+
+def register2(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('index')
+            # return redirect('login')
             # Should redirect to login instead of duplicating code
-            # context = {'form': LoginForm()}
-            # return render(request, 'seguranca/login.html', context)
+            context = {'form': LoginForm()}
+            return render(request, 'auth/login.html', context)
+        else:
+            return render(request, "auth/base_auth.html")
     else:
         context = {'form': UserCreationForm()}
-        return render(request,'seguranca/registro.html', context)
+        return render(request,'auth/register.html', context)
 
 def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('todo')
-    context = {'form': LoginForm()}
-    return render(request, 'seguranca/login.html', context)
+            return redirect('todo_list')
+    else:
+        context = {'form': LoginForm()}
+        return render(request, 'auth/login.html', context)
 
 # TODOLIST PAGES
 
@@ -38,12 +56,12 @@ def todo_list(request):
         form = ToDoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('todo')
+            return redirect('todo_list')
     else:
-        form = ToDoForm()
-        return render(request, 'todo.html', {'todos': todos, 'form': form})
+        context =  {'todos': todos, 'form': ToDoForm()}
+        return render(request, 'todo/todo.html', context)
 
-def delete_todo(request):
+def todo_delete(request):
     todo_id = request.POST.get('id')
     todo = ToDo.objects.get(id=todo_id)
     if request.method == 'POST':

@@ -15,8 +15,8 @@
         </div>
         <div class="links-container">
             {% if not user.is_authenticated %}
-            <a href="{% url 'registro' %}">Registrar</a>
-            <a href="{% url 'login' %}?next={% url 'todo_list' %}">Login</a>
+            <a href="{% url 'register' %}">Registrar</a>
+            <a href="{% url 'login' %}">Login</a>
             {% endif %}
         </div>
         <hr>

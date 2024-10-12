@@ -1,4 +1,4 @@
-{% extends 'base_todo.html' %}
+{% extends 'auth/base_auth.html' %}
 {% block content %}
   <h1>To-Do List</h1>
   <form method="post">
@@ -11,12 +11,12 @@
       <li>{{ todo.name }} ({{ todo.deadline }})
         Marcar como concluída: 
           <input type="checkbox" name="is_checked" value="True" {% if todo.is_checked %}checked{% endif %}>
-        <form action="{% url 'delete_todo' %}" method="post">
+        <form action="{% url 'todo_delete' %}" method="post">
           {% csrf_token %}
           <input type="hidden" name="id" value="{{ todo.id }}">
           <button type="submit">Atualizar</button>
         </form>
-        <form action="{% url 'delete_todo' %}" method="post">
+        <form action="{% url 'todo_delete' %}" method="post">
           {% csrf_token %}
           <input type="hidden" name="id" value="{{ todo.id }}">
           <button type="submit">Delete</button>

@@ -5,9 +5,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('seguranca/',views.registro, name='registro'),
-    path('seguranca/', LoginView.as_view(template_name='seguranca/login.html'), name='login'),
-    path('todo/', views.todo_list, name='todo_list'),
-    path('delete_todo/', views.delete_todo, name='delete_todo'),
+    path('auth/register', views.register, name='register'),
+    path('auth/login', views.login, name='login'),
+    path('todo/todo', views.todo_list, name='todo_list'),
+    path('todo/delete', views.todo_delete, name='todo_delete'),
 ]

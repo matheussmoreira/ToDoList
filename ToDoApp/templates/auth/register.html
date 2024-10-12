@@ -1,0 +1,16 @@
+{% extends 'auth/base_auth.html' %}
+{% block title %}Registro{% endblock %}
+{% block content %}
+<h2>Página de Registro</h2>
+{% for message in messages %}
+    <div class="alert alert-success">
+        <a class="close" href="#" data-dismiss="alert">×</a>
+           {{ message }}
+    </div>
+{% endfor %}
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrar</button>
+</form>
+{% endblock %}

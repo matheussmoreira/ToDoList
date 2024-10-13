@@ -1,6 +1,7 @@
 {% extends 'auth/base_auth.html' %}
+{% block title %}To-Do List{% endblock %}
 {% block content %}
-  <h1>To-Do List</h1>
+<h1>To-Do List</h1>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from .models import ToDo
@@ -50,17 +50,33 @@ def login(request):
 
 # TODOLIST PAGES
 
-def todo_list(request):
+# Old
+def todo(request):
     todos = ToDo.objects.all()
     if request.method == 'POST':
         form = ToDoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('todo_list')
+            return redirect('todo')
     else:
         context =  {'todos': todos, 'form': ToDoForm()}
         return render(request, 'todo/todo.html', context)
 
+def todo_list(request):
+    if request.method == 'POST':
+        form = ToDoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('todo_list')
+        else:
+            messages.error(request,'Nâo foi possível salvar o item!')
+            return redirect('todo_list')
+    else:
+        todos = ToDo.objects.order_by('name')
+        context =  {'todos': todos, 'form': ToDoForm()}
+        return render(request, 'todo/todo_list.html', context)
+
+# Obsolete
 def todo_delete(request):
     todo_id = request.POST.get('id')
     todo = ToDo.objects.get(id=todo_id)
@@ -68,3 +84,24 @@ def todo_delete(request):
         todo.is_checked = not todo.is_checked 
         todo.save()
     return redirect('index')
+
+# CRUD METHODS
+
+def add(request):
+    title = request.POST['title']
+    ToDo.objects.create(title=title)
+    return redirect('todo_list')
+
+def update(request, todo_id):
+    todo = get_object_or_404(ToDo, pk=todo_id)
+    is_checked = request.POST.get('is_checked', False)
+    if is_checked == 'on':
+        is_checked = True
+    todo.is_checked = is_checked
+    todo.save()
+    return redirect('todo_list')
+
+def delete(request, todo_id):
+    todo = get_object_or_404(ToDo, pk=todo_id)
+    todo.delete()
+    return redirect('todo_list')

@@ -1,16 +1,17 @@
 {% extends 'auth/base_auth.html' %}
 {% block title %} To-Do List {% endblock %}
 {% block content %}
+{% load static %}
 
 <div class="container">
     <!-- ADICIONAR TODO -->
     <div class="row">
         <div class="offset-md-2 col-lg-9">
-            <form method="post" onsubmit="add()">
+            <form method="post" action="{% url 'todo_add' %}">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="col-md-6">
-                        <input type="text" class="form-control" name="title" placeholder="Nova tarefa" required>
+                        <input type="text" class="form-control" name="name" placeholder="Nova tarefa" required>
                     </div>
                     <div class="col-md-6">
                         <button type="submit" name="submit" class="btn btn-outline-primary"> + </button>
@@ -26,14 +27,16 @@
           <div class="list-group">
             {% for todo in todos %}
             <div class="list-group-item {% if todo.is_checked %} checked {% endif %}">
-                <!-- CHEKCBOX-->
-                <form style="display: inline;" method="post" onsubmit="update(todo.id)">
+                <!-- CHECKBOX-->
+                <form style="display: inline;" method="post" action="{% url 'todo_update' todo.id%}">
                     {% csrf_token %}
                     <input type="checkbox" name="is_checked" onchange="this.form.submit()" {% if todo.is_checked %} checked
                       {% endif %} class="todo-status-checkbox" title="{% if not todo.is_checked %} mark as done {% else %} mark undone {% endif %}">
                 </form>
                 <!-- TODO NAME-->
                 {{ todo.name }}
+                <!-- TODO DELETION -->
+                <a href="{% url 'todo_delete' todo.id %}"><img src="{% static 'img/ToDoApp/trash.png' %}" alt="Delete" style="width:15px;height:15px;"></a>
             </div>
             {% endfor %}
           </div>

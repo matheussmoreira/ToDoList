@@ -44,4 +44,4 @@ class LoginForm(forms.Form):
 class ToDoForm(forms.ModelForm):
     class Meta:
         model = ToDo
-        fields = ('name', 'details', 'deadline')
+        fields = ('name',)

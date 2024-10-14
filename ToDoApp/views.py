@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.base import View
+from django.http.response import HttpResponseRedirect
+from django.urls.base import reverse_lazy
 from django.contrib import messages
 from .models import ToDo
 from .forms import *
@@ -48,19 +51,7 @@ def login(request):
         context = {'form': LoginForm()}
         return render(request, 'auth/login.html', context)
 
-# TODOLIST PAGES
-
-# Old
-def todo(request):
-    todos = ToDo.objects.all()
-    if request.method == 'POST':
-        form = ToDoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('todo')
-    else:
-        context =  {'todos': todos, 'form': ToDoForm()}
-        return render(request, 'todo/todo.html', context)
+# CRUD
 
 def todo_list(request):
     if request.method == 'POST':
@@ -76,23 +67,12 @@ def todo_list(request):
         context =  {'todos': todos, 'form': ToDoForm()}
         return render(request, 'todo/todo_list.html', context)
 
-# Obsolete
-def todo_delete(request):
-    todo_id = request.POST.get('id')
-    todo = ToDo.objects.get(id=todo_id)
-    if request.method == 'POST':
-        todo.is_checked = not todo.is_checked 
-        todo.save()
-    return redirect('index')
-
-# CRUD METHODS
-
-def add(request):
-    title = request.POST['title']
-    ToDo.objects.create(title=title)
+def todo_add(request):
+    name = request.POST['name']
+    ToDo.objects.create(name=name)
     return redirect('todo_list')
 
-def update(request, todo_id):
+def todo_update(request, todo_id):
     todo = get_object_or_404(ToDo, pk=todo_id)
     is_checked = request.POST.get('is_checked', False)
     if is_checked == 'on':
@@ -101,7 +81,28 @@ def update(request, todo_id):
     todo.save()
     return redirect('todo_list')
 
-def delete(request, todo_id):
+def todo_delete(request, todo_id):
     todo = get_object_or_404(ToDo, pk=todo_id)
     todo.delete()
     return redirect('todo_list')
+
+
+# Old
+def todo(request):
+    todos = ToDo.objects.all()
+    if request.method == 'POST':
+        form = ToDoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('todo')
+    else:
+        context =  {'todos': todos, 'form': ToDoForm()}
+        return render(request, 'todo/todo.html', context)
+    
+def todo_delete2(request):
+    todo_id = request.POST.get('id')
+    todo = ToDo.objects.get(id=todo_id)
+    if request.method == 'POST':
+        todo.is_checked = not todo.is_checked 
+        todo.save()
+    return redirect('index')

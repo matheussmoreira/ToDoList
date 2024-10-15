@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = SECRET_HOSTS
 
+AUTH_USER_MODEL = 'ToDoApp.CustomUser'
+
 # Application definition
 
 INSTALLED_APPS = [

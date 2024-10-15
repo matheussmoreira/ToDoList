@@ -7,10 +7,11 @@ from django.contrib import messages
 from .models import ToDo
 from .forms import *
 
-# AUTHENTICATION PAGES
+# AUTHENTICATION
 
 def index(request):
-    return render(request, "auth/base_auth.html")
+    context = {'user': request.user,}
+    return render(request, "auth/base_auth.html", context)
 
 def register(request):  
     if request.method == 'POST':  
@@ -54,55 +55,33 @@ def login(request):
 # CRUD
 
 def todo_list(request):
-    if request.method == 'POST':
-        form = ToDoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('todo_list')
-        else:
-            messages.error(request,'Nâo foi possível salvar o item!')
-            return redirect('todo_list')
-    else:
-        todos = ToDo.objects.order_by('name')
-        context =  {'todos': todos, 'form': ToDoForm()}
-        return render(request, 'todo/todo_list.html', context)
+    todos = request.user.todos
+    context =  {'todos': todos, 'form': ToDoForm()}
+    return render(request, 'todo/todo_list.html', context)
 
 def todo_add(request):
     name = request.POST['name']
-    ToDo.objects.create(name=name)
+    todo = ToDo.objects.create(name=name)
+    request.user.todos.append(todo)
     return redirect('todo_list')
 
 def todo_update(request, todo_id):
-    todo = get_object_or_404(ToDo, pk=todo_id)
+    todo = get_todo(request, todo_id)
     is_checked = request.POST.get('is_checked', False)
     if is_checked == 'on':
         is_checked = True
     todo.is_checked = is_checked
     todo.save()
+    map(lambda item: todo if item.id == todo_id else item, request.user.todos)
     return redirect('todo_list')
 
 def todo_delete(request, todo_id):
-    todo = get_object_or_404(ToDo, pk=todo_id)
-    todo.delete()
+    todo = get_todo(request, todo_id)
+    request.user.todos.remove(todo)
     return redirect('todo_list')
 
+# HELPER METHODS
 
-# Old
-def todo(request):
-    todos = ToDo.objects.all()
-    if request.method == 'POST':
-        form = ToDoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('todo')
-    else:
-        context =  {'todos': todos, 'form': ToDoForm()}
-        return render(request, 'todo/todo.html', context)
-    
-def todo_delete2(request):
-    todo_id = request.POST.get('id')
-    todo = ToDo.objects.get(id=todo_id)
-    if request.method == 'POST':
-        todo.is_checked = not todo.is_checked 
-        todo.save()
-    return redirect('index')
+def get_todo(request, todo_id):
+    todo_filter = filter(lambda item: item.id == todo_id, request.user.todos)
+    return list(todo_filter)[0]

@@ -1,10 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
-from django.views.generic.base import View
-from django.http.response import HttpResponseRedirect
-from django.urls.base import reverse_lazy
+from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import ToDo
+from django.contrib.auth import login, logout
+from django.contrib.auth.hashers import check_password
+from .models import *
 from .forms import *
 
 # AUTHENTICATION
@@ -13,44 +11,46 @@ def index(request):
     context = {'user': request.user,}
     return render(request, "auth/base_auth.html", context)
 
-def register(request):  
+def auth_register(request):  
     if request.method == 'POST':  
         form = RegisterForm(request.POST)
         if form.is_valid():  
             form.save()
             return redirect('login')
-            # context = {'form': LoginForm()}
-            # return render(request, 'auth/login.html', context)
         else:
             messages.error(request,'Registro inválido!')
             return redirect('register')
     context = {'form': RegisterForm()}  
     return render(request, 'auth/register.html', context)  
 
-def register2(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # return redirect('login')
-            # Should redirect to login instead of duplicating code
-            context = {'form': LoginForm()}
-            return render(request, 'auth/login.html', context)
-        else:
-            return render(request, "auth/base_auth.html")
-    else:
-        context = {'form': UserCreationForm()}
-        return render(request,'auth/register.html', context)
-
-def login(request):
+def auth_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
         if form.is_valid():
-            form.save()
-            return redirect('todo_list')
+            user = authenticate(username, password)
+            if user is not None:
+                login(request, user)
+                # messages.success(request, f'Login feito com {user.username}!')
+                return redirect('todo_list')
     else:
         context = {'form': LoginForm()}
         return render(request, 'auth/login.html', context)
+    
+def authenticate(username=None, password=None):
+    try:
+        user = CustomUser.objects.get(username=username)
+        if check_password(password, user.password):
+            return user
+        return None
+    except CustomUser.DoesNotExist:
+        return None
+    
+def auth_logout(request):
+    logout(request)
+    # messages.success(request, "Deslogado!")
+    return redirect('login')
 
 # CRUD
 

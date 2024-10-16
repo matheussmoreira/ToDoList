@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
+# from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.hashers import check_password
 from .models import *
@@ -18,7 +18,7 @@ def auth_register(request):
             form.save()
             return redirect('login')
         else:
-            messages.error(request,'Registro inválido!')
+            # messages.error(request,'Registro inválido!')
             return redirect('register')
     context = {'form': RegisterForm()}  
     return render(request, 'auth/register.html', context)  
@@ -34,6 +34,7 @@ def auth_login(request):
                 login(request, user)
                 # messages.success(request, f'Login feito com {user.username}!')
                 return redirect('todo_list')
+        return redirect('login')
     else:
         context = {'form': LoginForm()}
         return render(request, 'auth/login.html', context)
@@ -56,7 +57,7 @@ def auth_logout(request):
 
 def todo_list(request):
     todos = request.user.todos
-    context =  {'todos': todos, 'form': ToDoForm()}
+    context =  {'todos': todos, 'form': ToDoForm(),}
     return render(request, 'todo/todo_list.html', context)
 
 def todo_add(request):

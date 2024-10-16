@@ -56,33 +56,28 @@ def auth_logout(request):
 # CRUD
 
 def todo_list(request):
-    todos = request.user.todos
-    context =  {'todos': todos, 'form': ToDoForm(),}
+    todos = request.user.todos.all()  
+    context = {'todos': todos, 'form': ToDoForm()}
     return render(request, 'todo/todo_list.html', context)
+
 
 def todo_add(request):
     name = request.POST['name']
-    todo = ToDo.objects.create(name=name)
-    request.user.todos.append(todo)
+    todo = ToDo.objects.create(name=name, user=request.user) 
     return redirect('todo_list')
+
 
 def todo_update(request, todo_id):
     todo = get_todo(request, todo_id)
     is_checked = request.POST.get('is_checked', False)
-    if is_checked == 'on':
-        is_checked = True
-    todo.is_checked = is_checked
+    todo.is_checked = (is_checked == 'on')
     todo.save()
-    map(lambda item: todo if item.id == todo_id else item, request.user.todos)
     return redirect('todo_list')
 
 def todo_delete(request, todo_id):
     todo = get_todo(request, todo_id)
-    request.user.todos.remove(todo)
+    todo.delete()  
     return redirect('todo_list')
 
-# HELPER METHODS
-
 def get_todo(request, todo_id):
-    todo_filter = filter(lambda item: item.id == todo_id, request.user.todos)
-    return list(todo_filter)[0]
+    return ToDo.objects.get(id=todo_id, user=request.user) 

@@ -37,4 +37,4 @@ Projeto hospedado na AWS para fácil acesso de qualquer dispositivo com internet
 
 ## Observações Gerais do Projeto
 
-Conseguimos implementar as funcionalidades de **cadastro** e **login**. Quando um **nome de usuário inválido** é inserido, um alerta é gerado corretamente, porém, essa verificação **não ocorre para senhas**, o que poderia ser melhorado. A funcionalidade de **adicionar tarefas** está funcionando como esperado, conseguimos adicionar uma tarefa, atualizar ela para concluída e apagar ela.
+Conseguimos implementar as funcionalidades de **cadastro** e **login**. Quando um **nome de usuário inválido** é inserido, um alerta é gerado corretamente, porém, essa verificação **não ocorre para senhas**, o que poderia ser melhorado. A funcionalidade de **adicionar tarefas** está funcionando como esperado, conseguimos adicionar uma tarefa, atualizar ela para concluída e apagar ela. Além disso, subimos a aplicação para rodar na AWS, o que facilita muito o acesso da aplicação em qualquer dispositivo com internet. 
